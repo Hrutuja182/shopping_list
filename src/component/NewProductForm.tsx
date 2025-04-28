@@ -111,7 +111,7 @@ export const NewProductForm = ({ onAddProduct }: NewProductFormsProps) => {
         label="Price"
         type="number"
         value={price}
-        onChange={(e) => setPrice(+e.target.value)}
+        onChange={(e) => setPrice(+e.target.value)} 
         required
         fullWidth
       />

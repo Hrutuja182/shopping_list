@@ -28,7 +28,9 @@ export const ProductCard = ({ product, onAdd, onFavorite }: ProductcardProps) =>
         borderRadius: "12px",
         boxShadow: "0 2px 12px rgba(0,0,0,0.08)",
         transition: "0.3s",
-        "&:hover": { boxShadow: "0 4px 20px rgba(0,0,0,0.15)" },
+        "&:hover": { boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
+            
+        },
     }}>
         <CardMedia
           component="img"

@@ -139,7 +139,7 @@ function App() {
             variant="contained"
             color="primary"
             onClick={() => setShowNewProductForm(!showNewProductForm)}
-            sx={{ borderRadius: "8px", textTransform: "none", height: "50px" }}
+            sx={{ borderRadius: "8px", textTransform: "none", height:"45px" ,width:"30%"}}
           >
             {showNewProductForm ? "Cancel" : "Add New Product"}
           </Button>
