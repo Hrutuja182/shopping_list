@@ -4,6 +4,7 @@ import { deleteProduct } from "../services/api";
 import { Snackbar } from "@mui/material";
 import { Button, IconButton, Typography, Box, Divider } from "@mui/material";
 import { useState } from "react";
+import { FaHeart, FaRegHeart } from 'react-icons/fa';
 interface CartItemProps{
     item:Product ;
     onRemove: (id :number)=>void;
@@ -30,6 +31,11 @@ export const CartItem =({ item,onRemove,onQantitychange}:CartItemProps)=>{
             <Typography variant="body2" color="textSecondary">{item.price}</Typography>
             </Box> 
             <Box display="flex" alignItems="center" gap={2}>
+            {item.favorite ? (
+                        <FaHeart color="red" />
+                    ) : (
+                        <FaRegHeart color="grey" />
+                    )}
                 <Button variant="outlined"  onClick={()=>onQantitychange(item.id,-1)}>-</Button>
                 <Typography variant="body1">{item.quantity}</Typography>
                 <Button variant="outlined"  onClick={()=>onQantitychange(item.id,1)}>+</Button>

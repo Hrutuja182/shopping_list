@@ -115,10 +115,11 @@ function App() {
   };
 
   return (
-    <Box p={4} display="flex" gap={4}>
+    <Box p={4} display="flex" gap={4} bgcolor="#f4f4f8" minHeight="100vh"  justifyContent="center">
       {/* Products List */}
+      <Box maxWidth="1200px" width="100%" display="flex" gap={4}>
       <Box flex={1}>
-        <Box display="flex" gap={2} mb={3}>
+        <Box display="flex" gap={2} mb={3} alignItems="center">
           <TextField
             fullWidth
             value={search}
@@ -126,11 +127,19 @@ function App() {
             placeholder="Search products..."
             variant="outlined"
             size="small"
+            sx={{
+              bgcolor: "#fff",
+              borderRadius: "8px",
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "8px",
+              },
+           }}
           />
           <Button
             variant="contained"
             color="primary"
             onClick={() => setShowNewProductForm(!showNewProductForm)}
+            sx={{ borderRadius: "8px", textTransform: "none", height: "50px" }}
           >
             {showNewProductForm ? "Cancel" : "Add New Product"}
           </Button>
@@ -141,15 +150,18 @@ function App() {
             <NewProductForm onAddProduct={handleAddNewProduct} />
           </Paper>
         )}
-
+          
+          <Divider sx={{ mb: 2 }} />
+          
         <Grid container spacing={3}>
           {currentProducts.map((product) => (
-            
+             <Box item xs={12} sm={6} key={product.id}>
               <ProductCard
                 product={product}
                 onAdd={handleAddToCart}
                 onFavorite={handleFavoriteToggle}
               />
+              </Box>
            
           ))}
         </Grid>
@@ -165,9 +177,16 @@ function App() {
       
 
       {/* Cart Section */}
-      <Paper elevation={3} sx={{ width: 350, padding: 3 }}>
+      <Paper elevation={3} sx={{ width: 350, padding: 3 ,borderRadius: "12px",
+          bgcolor: "#fff",
+          boxShadow: "0px 4px 20px rgba(0,0,0,0.1)",
+          display: "flex",
+          flexDirection: "column",
+          position: "sticky",
+          top: "20px",
+          height: "fit-content",}}>
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-          <Typography variant="h6" fontWeight="bold">My Cart</Typography>
+          <Typography variant="h6" fontWeight="bold" mb={2}>My Product</Typography>
           <Button variant="text" color="error" size="small" onClick={handleClearCart}>
             Delete All
           </Button>
@@ -217,6 +236,7 @@ function App() {
           Confirm Order
         </Button>
       </Paper>
+      </Box>
     </Box>
   );
 }
