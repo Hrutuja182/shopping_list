@@ -25,30 +25,39 @@ export const CartItem =({ item,onRemove,onQantitychange}:CartItemProps)=>{
     };
     return(
         <>
-        <Box display="flex" justifyContent="space-between" alignItems="center" py={2}>
-           <Box>
-            < Typography variant="h6">{item.title}</Typography>
-            <Typography variant="body2" color="textSecondary">{item.price}</Typography>
-            </Box> 
-            <Box display="flex" alignItems="center" gap={2}>
-            {item.favorite ? (
-                        <FaHeart color="red" />
+            <Box display="flex" justifyContent="space-between" alignItems="center" py={2} px={1}>
+                <Box display="flex" alignItems="center" gap={1}>
+                    <Box
+                        component="img"
+                        src={item.images}
+                        alt={item.title}
+                        sx={{ width: 40, height: 40, objectFit: 'contain', borderRadius: 1 }}
+                    />
+                    <Box sx={{ maxWidth: 160 }}>
+                        <Typography variant="body2" fontWeight={500} flexWrap="wrap">
+                            {item.title}
+                        </Typography>
+                        <Typography variant="caption" color="textSecondary">
+                            €{item.price}
+                        </Typography>
+                    </Box>
+                </Box>
+
+                <Box display="flex" alignItems="center" gap={1}>
+                    {item.favorite ? (
+                        <FaHeart color="red" size={16} />
                     ) : (
-                        <FaRegHeart color="grey" />
+                        <FaRegHeart color="grey" size={16} />
                     )}
-                <Button variant="outlined"  onClick={()=>onQantitychange(item.id,-1)}>-</Button>
-                <Typography variant="body1">{item.quantity}</Typography>
-                <Button variant="outlined"  onClick={()=>onQantitychange(item.id,1)}>+</Button>
-                <IconButton onClick={()=>handleRemove(item.id)}> <MdDelete size={20} /></IconButton>
+                    <Button size="small" variant="outlined" onClick={() => onQantitychange(item.id, -1)}>-</Button>
+                    <Typography variant="body2">{item.quantity}</Typography>
+                    <Button size="small" variant="outlined" onClick={() => onQantitychange(item.id, 1)}>+</Button>
+                    <IconButton size="small" onClick={() => handleRemove(item.id)}>
+                        <MdDelete size={18} />
+                    </IconButton>
+                </Box>
             </Box>
 
-        </Box>
-        <Snackbar
-        open={openSnackbar}
-        autoHideDuration={6000}
-        message="Item removed successfully"
-        onClose={() => setOpenSnackbar(false)}
-      />
       </>
     )
 }

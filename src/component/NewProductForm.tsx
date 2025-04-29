@@ -63,38 +63,96 @@ export const NewProductForm = ({ onAddProduct }: NewProductFormsProps) => {
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit} display="flex"  gap={3}>
-      <Box display="flex" flexDirection="column" alignItems="center" justifyContent="center" width="40%">
+    <Box
+    component="form"
+    onSubmit={handleSubmit}
+    display="flex"
+    flexWrap="wrap"
+    gap={3}
+    sx={{
+      backgroundColor: "#f7f7fb",
+      p: 4,
+      borderRadius: "16px",
+      maxWidth: 900,
+      mx: "auto"
+    }}
+  >
+    <Box
+      display="flex"
+      flexDirection="column"
+      alignItems="center"
+      justifyContent="center"
+      width="100%"
+      maxWidth={240}
+      height={240}
+      sx={{
+        border: "2px dashed #ccc",
+        borderRadius: "12px",
+        backgroundColor: "#f1f1f6",
+        cursor: "pointer",
+        overflow: "hidden",
+        position: "relative"
+      }}
+    >
       {!images && (
-          <InputLabel htmlFor="upload-image">
+        <Box textAlign="center">
+          <InputLabel htmlFor="upload-image" sx={{ cursor: "pointer" }}>
             <IconButton color="primary" component="span">
               <PhotoCamera />
             </IconButton>
+            <Typography variant="body2" color="textSecondary">
+              Add image
+            </Typography>
           </InputLabel>
-        )}
-        <input
-          accept="image/*"
-          id="upload-image"
-          type="file"
-          multiple
-          onChange={handleImageChange}
-          style={{ display: "none" }}
-        />
-        <Box display="flex" gap={2} mt={2}>
-          {images &&
-            Array.from(images).map((file, index) => (
-              <img
-                key={index}
-                src={URL.createObjectURL(file)}
-                alt={`preview-${index}`}
-                style={{ width: "100px", height: "100px", objectFit: "cover", borderRadius: "8px" }}
-              />
-            ))}
         </Box>
-      </Box>
-      <Box width="60%" display="flex" flexDirection="column" gap={2}>
+      )}
+      <input
+        accept="image/*"
+        id="upload-image"
+        type="file"
+        multiple
+        onChange={handleImageChange}
+        style={{ display: "none" }}
+      />
+  
+    
+      {images && (
+        <Box
+          display="flex"
+          gap={1}
+          flexWrap="wrap"
+          p={1}
+          sx={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            overflow: "auto",
+            backgroundColor: "#fff"
+          }}
+        >
+          {Array.from(images).map((file, index) => (
+            <img
+              key={index}
+              src={URL.createObjectURL(file)}
+              alt={`preview-${index}`}
+              style={{
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                borderRadius: "8px"
+              }}
+            />
+          ))}
+        </Box>
+      )}
+    </Box>
+  
+    <Box flex={1} display="flex" flexDirection="column" gap={2}>
       <TextField
         label="Title"
+        variant="filled"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         required
@@ -102,6 +160,7 @@ export const NewProductForm = ({ onAddProduct }: NewProductFormsProps) => {
       />
       <TextField
         label="Brand"
+        variant="filled"
         value={brand}
         onChange={(e) => setBrand(e.target.value)}
         required
@@ -110,13 +169,15 @@ export const NewProductForm = ({ onAddProduct }: NewProductFormsProps) => {
       <TextField
         label="Price"
         type="number"
+        variant="filled"
         value={price}
-        onChange={(e) => setPrice(+e.target.value)} 
+        onChange={(e) => setPrice(+e.target.value)}
         required
         fullWidth
       />
       <TextField
         label="Description"
+        variant="filled"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         multiline
@@ -137,9 +198,10 @@ export const NewProductForm = ({ onAddProduct }: NewProductFormsProps) => {
         fullWidth
         sx={{ height: 50 }}
       >
-        {submitting ? <CircularProgress size={24} color="inherit" /> : "Add to Cart"}
+        {submitting ? <CircularProgress size={24} color="inherit" /> : "Add new product"}
       </Button>
     </Box>
-    </Box>
+  </Box>
+  
   );
 };
