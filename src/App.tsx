@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,useRef } from "react";
 import { fetchProducts, searchProducts } from "./services/api";
 import { Product } from "./types/Product";
 import { ProductCard } from "./component/ProductCard";
 import { CartItem } from "./component/CartItem";
 import { NewProductForm } from "./component/NewProductForm";
-import {
+import { SearchProduct } from "./component/SerachProduct";
+import { 
   Box,
   Button,
   Grid,
@@ -21,8 +22,24 @@ function App() {
   const [search, setSearch] = useState("");
   const [showNewProductForm, setShowNewProductForm] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 6;
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [searchResults, setSearchResults] = useState<Product[]>([]);
+  const searchRef = useRef<HTMLDivElement>(null);
 
+  const productsPerPage = 6;
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+        setShowDropdown(false);
+      }
+    };
+  
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+  
   useEffect(() => {
     loadProducts();
   }, []);
@@ -77,6 +94,13 @@ function App() {
           : product
       )
     );
+    setSearchResults(
+      products.map((product) =>
+        product.id === id
+          ? { ...product, favorite: !product.favorite }
+          : product
+      )
+    );
   };
 
   const handleAddNewProduct = (product: Product) => {
@@ -87,17 +111,22 @@ function App() {
   const handleSearchChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     setSearch(value);
+    setShowDropdown(true);
+  
     if (value.trim() === "") {
       await loadProducts();
+      setSearchResults([]);
+      setShowDropdown(false);
     } else {
       try {
-        const searchResult = await searchProducts(value);
-        setProducts(searchResult);
+        const results = await searchProducts(value);
+        setSearchResults(results);
       } catch (error) {
         console.error("Search failed:", error);
       }
     }
   };
+  
 
   const subtotal = cart.reduce(
     (acc, item) => acc + item.price * (item.quantity || 1),
@@ -113,28 +142,74 @@ function App() {
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setCurrentPage(value);
   };
-
+  const handleDeleteProposal = (id: number) => {
+    setCart(cart.filter((item) => item.id !== id));
+    setProducts(products.filter((item) => item.id !== id));
+    setSearchResults(searchResults.filter((item) => item.id !== id));
+  };
+  
   return (
     <Box p={4} display="flex" gap={4} bgcolor="#f4f4f8" minHeight="100vh"  justifyContent="center">
       {/* Products List */}
       <Box maxWidth="1200px" width="100%" display="flex" gap={4}>
       <Box flex={1}>
-        <Box display="flex" gap={2} mb={3} alignItems="center">
-          <TextField
-            fullWidth
-            value={search}
-            onChange={handleSearchChange}
-            placeholder="Search products..."
-            variant="outlined"
-            size="small"
-            sx={{
-              bgcolor: "#fff",
-              borderRadius: "8px",
-              "& .MuiOutlinedInput-root": {
+        <Box ref={searchRef} display="flex" gap={2} mb={3} alignItems="center" position="relative" >
+     
+            <TextField
+              fullWidth
+              value={search}
+              onChange={handleSearchChange}
+              onClick={() => setShowDropdown(true)}
+              placeholder="Search products..."
+              variant="outlined"
+              size="small"
+              sx={{
+                bgcolor: "#fff",
                 borderRadius: "8px",
-              },
-           }}
-          />
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "8px",
+                },
+              }}
+            />
+
+            {showDropdown && (
+              <Paper
+                elevation={4}
+                sx={{
+                  position: "absolute",
+                  top: "45px",
+                  left: 0,
+                  right: 0,
+                  maxHeight: "400px",
+                  overflowY: "auto",
+                  zIndex: 10,
+                  p: 2,
+                  borderRadius: 2,
+                  bgcolor: "#fff",
+                }}
+              >
+                <Typography variant="subtitle1" mb={2} fontWeight="bold">
+                  Continue shopping
+                </Typography>
+
+                {searchResults.length > 0 ? (
+                  searchResults.map((product) => (
+                    <SearchProduct
+                      key={product.id}
+                      product={product}
+                      onAdd={handleAddToCart}
+                      onFavorite={handleFavoriteToggle}
+                      onDelete={handleDeleteProposal}
+                    />
+                  ))
+                ) : (
+                  <Typography variant="body2" color="text.secondary">
+                    No products found.
+                  </Typography>
+                )}
+              </Paper>
+            )}
+        
           <Button
             variant="contained"
             color="primary"
